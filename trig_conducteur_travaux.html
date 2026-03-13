@@ -1,0 +1,817 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Trigonométrie – Chantier Lumière</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;900&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --orange: #F4720B;
+    --orange-dark: #C45800;
+    --jaune: #F9C623;
+    --gris-fond: #1A1C1E;
+    --gris-carte: #23262B;
+    --gris-bord: #343840;
+    --gris-clair: #8A919E;
+    --blanc: #F0F2F5;
+    --vert: #2ECC71;
+    --rouge: #E74C3C;
+    --bleu: #3498DB;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--gris-fond);
+    color: var(--blanc);
+    font-family: 'Barlow', sans-serif;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* ─── HEADER ─── */
+  header {
+    background: var(--gris-carte);
+    border-bottom: 3px solid var(--orange);
+    padding: 14px 28px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  .logo-casque {
+    font-size: 2rem;
+  }
+  .header-title {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 900;
+    font-size: 1.5rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--orange);
+  }
+  .header-sub {
+    font-size: 0.8rem;
+    color: var(--gris-clair);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+  }
+  .badge-classe {
+    margin-left: auto;
+    background: var(--orange);
+    color: #fff;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700;
+    font-size: 0.85rem;
+    padding: 4px 12px;
+    border-radius: 4px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  /* ─── LAYOUT ─── */
+  .main-wrapper {
+    display: flex;
+    flex: 1;
+    gap: 0;
+    max-width: 1100px;
+    margin: 28px auto;
+    width: 100%;
+    padding: 0 16px;
+    align-items: flex-start;
+  }
+
+  /* ─── PANNEAU CONTEXTE (gauche fixe) ─── */
+  .contexte-panel {
+    width: 320px;
+    min-width: 280px;
+    background: var(--gris-carte);
+    border: 1px solid var(--gris-bord);
+    border-radius: 8px;
+    padding: 20px;
+    position: sticky;
+    top: 20px;
+    margin-right: 24px;
+  }
+  .ctx-badge {
+    display: inline-block;
+    background: var(--orange);
+    color: #fff;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    padding: 3px 10px;
+    border-radius: 3px;
+    margin-bottom: 12px;
+  }
+  .ctx-titre {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700;
+    font-size: 1.25rem;
+    color: var(--blanc);
+    margin-bottom: 10px;
+    line-height: 1.3;
+  }
+  .ctx-corps {
+    font-size: 0.88rem;
+    color: #BEC5CE;
+    line-height: 1.65;
+  }
+  .ctx-corps strong {
+    color: var(--jaune);
+  }
+  .ctx-divider {
+    border: none;
+    border-top: 1px solid var(--gris-bord);
+    margin: 16px 0;
+  }
+  .ctx-schema {
+    background: #1E2126;
+    border: 1px solid var(--gris-bord);
+    border-radius: 6px;
+    padding: 12px;
+    margin-top: 14px;
+  }
+  .ctx-schema svg {
+    display: block;
+    margin: auto;
+  }
+  .ctx-schema p {
+    text-align: center;
+    font-size: 0.75rem;
+    color: var(--gris-clair);
+    margin-top: 6px;
+    font-style: italic;
+  }
+
+  /* ─── PANNEAU QUESTIONS (droite) ─── */
+  .questions-panel {
+    flex: 1;
+    min-width: 0;
+  }
+
+  /* ─── BARRE DE PROGRESSION ─── */
+  .progress-bar-outer {
+    background: var(--gris-carte);
+    border: 1px solid var(--gris-bord);
+    border-radius: 6px;
+    padding: 14px 18px;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  .progress-label {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: var(--gris-clair);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    white-space: nowrap;
+  }
+  .progress-track {
+    flex: 1;
+    height: 8px;
+    background: var(--gris-bord);
+    border-radius: 99px;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    background: var(--orange);
+    border-radius: 99px;
+    transition: width 0.5s ease;
+  }
+  .progress-count {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700;
+    font-size: 1rem;
+    color: var(--orange);
+    white-space: nowrap;
+  }
+
+  /* ─── CARTE QUESTION ─── */
+  .question-card {
+    background: var(--gris-carte);
+    border: 1px solid var(--gris-bord);
+    border-radius: 8px;
+    padding: 24px;
+    animation: fadeSlide 0.4s ease;
+  }
+  @keyframes fadeSlide {
+    from { opacity: 0; transform: translateY(10px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .q-numero {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--orange);
+    margin-bottom: 6px;
+  }
+  .q-enonce {
+    font-size: 1.02rem;
+    line-height: 1.7;
+    color: var(--blanc);
+    margin-bottom: 18px;
+  }
+  .q-enonce strong { color: var(--jaune); }
+
+  /* schéma SVG dans la question */
+  .q-schema {
+    background: #1E2126;
+    border: 1px solid var(--gris-bord);
+    border-radius: 6px;
+    padding: 16px;
+    margin-bottom: 18px;
+    text-align: center;
+  }
+  .q-schema svg { display: inline-block; }
+  .q-schema .schema-caption {
+    font-size: 0.75rem;
+    color: var(--gris-clair);
+    margin-top: 8px;
+    font-style: italic;
+  }
+
+  /* aide brouillon */
+  .brouillon-hint {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: #1E2126;
+    border-left: 3px solid var(--bleu);
+    border-radius: 4px;
+    padding: 10px 14px;
+    margin-bottom: 18px;
+    font-size: 0.82rem;
+    color: #BEC5CE;
+  }
+  .brouillon-hint span.icon { font-size: 1.2rem; }
+
+  /* zone de réponse */
+  .reponse-zone {
+    display: flex;
+    gap: 10px;
+    align-items: stretch;
+    flex-wrap: wrap;
+  }
+  .input-wrapper {
+    display: flex;
+    align-items: center;
+    flex: 1;
+    min-width: 180px;
+    background: #1E2126;
+    border: 2px solid var(--gris-bord);
+    border-radius: 6px;
+    overflow: hidden;
+    transition: border-color 0.2s;
+  }
+  .input-wrapper:focus-within {
+    border-color: var(--orange);
+  }
+  .input-wrapper input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    outline: none;
+    padding: 11px 14px;
+    color: var(--blanc);
+    font-family: 'Barlow', sans-serif;
+    font-size: 1rem;
+  }
+  .input-wrapper .unite {
+    padding: 0 14px;
+    color: var(--gris-clair);
+    font-size: 0.9rem;
+    border-left: 1px solid var(--gris-bord);
+    height: 100%;
+    display: flex;
+    align-items: center;
+    white-space: nowrap;
+  }
+  .btn-valider {
+    background: var(--orange);
+    color: #fff;
+    border: none;
+    padding: 11px 22px;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700;
+    font-size: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+    white-space: nowrap;
+  }
+  .btn-valider:hover { background: var(--orange-dark); }
+  .btn-valider:active { transform: scale(0.97); }
+
+  /* feedback */
+  .feedback {
+    margin-top: 14px;
+    padding: 12px 16px;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    line-height: 1.55;
+    display: none;
+  }
+  .feedback.correct {
+    display: block;
+    background: rgba(46,204,113,0.12);
+    border: 1px solid rgba(46,204,113,0.4);
+    color: #7DEFA9;
+  }
+  .feedback.incorrect {
+    display: block;
+    background: rgba(231,76,60,0.12);
+    border: 1px solid rgba(231,76,60,0.4);
+    color: #F08080;
+  }
+  .feedback strong { font-weight: 600; }
+
+  .btn-suivant {
+    margin-top: 16px;
+    background: var(--gris-bord);
+    color: var(--blanc);
+    border: none;
+    padding: 10px 20px;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 600;
+    font-size: 0.95rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.2s;
+    display: none;
+  }
+  .btn-suivant:hover { background: #454B57; }
+  .btn-suivant::after { content: '  →'; }
+
+  /* compteur tentatives */
+  .tentatives {
+    font-size: 0.78rem;
+    color: var(--gris-clair);
+    margin-top: 10px;
+  }
+  .tentatives span { color: var(--jaune); font-weight: 600; }
+
+  /* ─── ECRAN FINAL ─── */
+  .ecran-final {
+    display: none;
+    background: var(--gris-carte);
+    border: 1px solid var(--gris-bord);
+    border-radius: 8px;
+    padding: 40px 32px;
+    text-align: center;
+  }
+  .final-emoji { font-size: 3.5rem; margin-bottom: 16px; }
+  .final-titre {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 900;
+    font-size: 2.2rem;
+    text-transform: uppercase;
+    color: var(--orange);
+    margin-bottom: 10px;
+  }
+  .final-texte {
+    font-size: 1rem;
+    color: #BEC5CE;
+    line-height: 1.7;
+    max-width: 480px;
+    margin: 0 auto 24px;
+  }
+  .final-score {
+    display: inline-block;
+    background: #1E2126;
+    border: 2px solid var(--orange);
+    border-radius: 8px;
+    padding: 14px 32px;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700;
+    font-size: 1.4rem;
+    color: var(--jaune);
+    margin-bottom: 24px;
+  }
+  .btn-recommencer {
+    background: var(--orange);
+    color: #fff;
+    border: none;
+    padding: 12px 28px;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700;
+    font-size: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    border-radius: 6px;
+    cursor: pointer;
+  }
+  .btn-recommencer:hover { background: var(--orange-dark); }
+
+  /* ─── RESPONSIVE ─── */
+  @media (max-width: 720px) {
+    .main-wrapper { flex-direction: column; }
+    .contexte-panel { width: 100%; min-width: 0; position: static; margin-right: 0; margin-bottom: 20px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo-casque">🦺</div>
+  <div>
+    <div class="header-title">Chantier Lumière — Parcours Trigonométrie</div>
+    <div class="header-sub">Conducteur de Travaux · 1ère TEBE</div>
+  </div>
+  <div class="badge-classe">1ère TEBE</div>
+</header>
+
+<div class="main-wrapper">
+
+  <!-- ═══ PANNEAU CONTEXTE (toujours visible) ═══ -->
+  <aside class="contexte-panel">
+    <div class="ctx-badge">📋 Mise en situation</div>
+    <div class="ctx-titre">Chantier : Résidence « Les Collines »</div>
+    <div class="ctx-corps">
+      Vous êtes <strong>conducteur·rice de travaux</strong> pour l'entreprise
+      <strong>DEVAUX BTP</strong>. Vous supervisez la construction d'un immeuble
+      de 4 étages à Saint-Étienne.
+      <br><br>
+      Votre rôle : coordonner les équipes, vérifier les cotes sur les plans,
+      sécuriser le chantier et planifier chaque intervention.
+      <br><br>
+      Tout au long de ce parcours, vous allez résoudre des
+      <strong>problèmes réels</strong> que rencontre un conducteur de travaux :
+      angles de pentes, hauteurs inaccessibles, distances, implantation…
+    </div>
+    <hr class="ctx-divider">
+    <div class="ctx-corps">
+      <strong>🔧 Rappel — Relations trigonométriques :</strong><br><br>
+      Dans un triangle rectangle en B :<br><br>
+      <code>sin(α) = côté opposé / hypoténuse</code><br>
+      <code>cos(α) = côté adjacent / hypoténuse</code><br>
+      <code>tan(α) = côté opposé / côté adjacent</code>
+    </div>
+    <div class="ctx-schema">
+      <svg width="180" height="130" viewBox="0 0 180 130">
+        <!-- triangle rectangle -->
+        <polygon points="20,110 160,110 160,20" fill="none" stroke="#F4720B" stroke-width="2"/>
+        <!-- angle droit -->
+        <rect x="148" y="98" width="12" height="12" fill="none" stroke="#F9C623" stroke-width="1.5"/>
+        <!-- labels -->
+        <text x="85" y="125" fill="#8A919E" font-size="11" text-anchor="middle" font-family="Barlow">adjacent (a)</text>
+        <text x="170" y="70" fill="#8A919E" font-size="11" text-anchor="start" font-family="Barlow">opp (o)</text>
+        <text x="75" y="60" fill="#F4720B" font-size="11" text-anchor="middle" font-family="Barlow" transform="rotate(-38,75,60)">hyp (h)</text>
+        <!-- angle alpha -->
+        <path d="M 40,110 Q 45,100 50,105" fill="none" stroke="#F9C623" stroke-width="1.5"/>
+        <text x="27" y="105" fill="#F9C623" font-size="13" font-family="Barlow Condensed">α</text>
+        <!-- B -->
+        <text x="150" y="125" fill="#BEC5CE" font-size="11" font-family="Barlow">B</text>
+      </svg>
+      <p>Triangle rectangle en B — angle α en bas à gauche</p>
+    </div>
+  </aside>
+
+  <!-- ═══ PANNEAU QUESTIONS ═══ -->
+  <section class="questions-panel">
+
+    <!-- barre de progression -->
+    <div class="progress-bar-outer">
+      <div class="progress-label">Progression</div>
+      <div class="progress-track">
+        <div class="progress-fill" id="progressFill" style="width:0%"></div>
+      </div>
+      <div class="progress-count" id="progressCount">0 / 7</div>
+    </div>
+
+    <!-- zone question active -->
+    <div id="zoneQuestion">
+      <div class="question-card" id="questionCard">
+        <!-- rempli par JS -->
+      </div>
+    </div>
+
+    <!-- écran final -->
+    <div class="ecran-final" id="ecranFinal">
+      <div class="final-emoji">🏗️</div>
+      <div class="final-titre">Chantier livré !</div>
+      <div class="final-texte">
+        Félicitations ! Vous avez résolu tous les problèmes du chantier
+        « Résidence Les Collines ». Votre maîtrise de la trigonométrie vous a
+        permis de mener chaque mission à bien.
+      </div>
+      <div class="final-score" id="finalScore"></div>
+      <br>
+      <button class="btn-recommencer" onclick="recommencer()">🔄 Recommencer le parcours</button>
+    </div>
+
+  </section>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════════
+//  DONNÉES — 7 questions métier trigonométrie
+// ═══════════════════════════════════════════════════════
+const questions = [
+  {
+    numero: "Mission 1",
+    titre: "Pente de la rampe d'accès",
+    enonce: `Le plan de l'architecte indique une rampe d'accès pour livraison. Elle monte de <strong>1,20 m</strong> sur une distance horizontale de <strong>5 m</strong>.<br><br>
+    En tant que conducteur de travaux, vous devez vérifier que la pente n'est pas trop raide pour les camions. 
+    <strong>Calculez l'angle α de cette rampe</strong> par rapport à l'horizontale.<br><br>
+    <em>Donnez votre réponse arrondie à 1 décimale.</em>`,
+    schema: `<svg width="260" height="120" viewBox="0 0 260 120">
+      <line x1="20" y1="100" x2="220" y2="100" stroke="#444" stroke-width="2"/>
+      <line x1="20" y1="100" x2="220" y2="40" stroke="#F4720B" stroke-width="2.5"/>
+      <line x1="220" y1="40" x2="220" y2="100" stroke="#3498DB" stroke-width="2" stroke-dasharray="5,4"/>
+      <rect x="208" y="88" width="12" height="12" fill="none" stroke="#F9C623" stroke-width="1.5"/>
+      <text x="110" y="115" fill="#8A919E" font-size="11" text-anchor="middle" font-family="Barlow">5 m</text>
+      <text x="234" y="74" fill="#3498DB" font-size="11" text-anchor="start" font-family="Barlow">1,20 m</text>
+      <path d="M 45,100 Q 50,90 55,93" fill="none" stroke="#F9C623" stroke-width="1.5"/>
+      <text x="28" y="94" fill="#F9C623" font-size="13" font-family="Barlow Condensed">α</text>
+      <text x="20" y="100" fill="#BEC5CE" font-size="10" text-anchor="middle" font-family="Barlow">A</text>
+      <text x="222" y="37" fill="#BEC5CE" font-size="10" font-family="Barlow">B</text>
+    </svg>`,
+    schemaCaption: "Vue de profil de la rampe",
+    unite: "°",
+    reponse: 13.5,
+    tolerance: 0.3,
+    hint_incorrect: "Vous avez la hauteur (côté opposé) et la distance horizontale (côté adjacent). Quelle relation trigonométrique utilise ces deux côtés ? Calculez la valeur du rapport, puis utilisez la fonction inverse correspondante sur votre calculatrice."
+  },
+  {
+    numero: "Mission 2",
+    titre: "Hauteur d'une façade inaccessible",
+    enonce: `Une façade en cours de ravalement est inaccessible directement. Vous vous placez à <strong>12 m</strong> de la base du mur, et l'angle d'élévation jusqu'au sommet mesure <strong>58°</strong>.<br><br>
+    <strong>Calculez la hauteur H de cette façade</strong> pour commander les bons échafaudages.<br><br>
+    <em>Donnez votre réponse arrondie à 2 décimales.</em>`,
+    schema: `<svg width="260" height="130" viewBox="0 0 260 130">
+      <line x1="20" y1="110" x2="200" y2="110" stroke="#444" stroke-width="2"/>
+      <line x1="200" y1="110" x2="200" y2="20" stroke="#F4720B" stroke-width="2.5"/>
+      <line x1="20" y1="110" x2="200" y2="20" stroke="#3498DB" stroke-width="2" stroke-dasharray="5,4"/>
+      <rect x="188" y="98" width="12" height="12" fill="none" stroke="#F9C623" stroke-width="1.5"/>
+      <text x="110" y="125" fill="#8A919E" font-size="11" text-anchor="middle" font-family="Barlow">12 m</text>
+      <text x="212" y="70" fill="#F4720B" font-size="11" font-family="Barlow">H = ?</text>
+      <path d="M 44,110 Q 50,98 56,102" fill="none" stroke="#F9C623" stroke-width="1.5"/>
+      <text x="28" y="104" fill="#F9C623" font-size="12" font-family="Barlow Condensed">58°</text>
+      <text x="18" y="123" fill="#BEC5CE" font-size="10" font-family="Barlow">Vous 👷</text>
+      <text x="185" y="16" fill="#BEC5CE" font-size="10" font-family="Barlow">Sommet</text>
+    </svg>`,
+    schemaCaption: "Vue de profil — vous observez la façade",
+    unite: "m",
+    reponse: 19.20,
+    tolerance: 0.05,
+    hint_incorrect: "Vous connaissez l'angle (58°) et le côté adjacent (12 m). Vous cherchez le côté opposé (H). Quelle relation relie l'angle, le côté adjacent et le côté opposé ? Posez l'équation et isolez H."
+  },
+  {
+    numero: "Mission 3",
+    titre: "Longueur d'un câble de grue",
+    enonce: `La grue du chantier est positionnée à <strong>8,5 m</strong> de hauteur. Le câble doit atteindre un point au sol situé à <strong>11 m</strong> horizontalement du pied de la grue.<br><br>
+    <strong>Calculez la longueur L du câble</strong> nécessaire pour réaliser ce levage.<br><br>
+    <em>Donnez votre réponse arrondie à 2 décimales.</em>`,
+    schema: `<svg width="260" height="140" viewBox="0 0 260 140">
+      <line x1="30" y1="20" x2="30" y2="120" stroke="#F4720B" stroke-width="3"/>
+      <line x1="30" y1="120" x2="200" y2="120" stroke="#444" stroke-width="2"/>
+      <line x1="30" y1="20" x2="200" y2="120" stroke="#3498DB" stroke-width="2.5" stroke-dasharray="6,4"/>
+      <rect x="30" y="108" width="12" height="12" fill="none" stroke="#F9C623" stroke-width="1.5"/>
+      <text x="8" y="72" fill="#F4720B" font-size="11" text-anchor="middle" font-family="Barlow">8,5 m</text>
+      <text x="115" y="135" fill="#8A919E" font-size="11" text-anchor="middle" font-family="Barlow">11 m</text>
+      <text x="130" y="62" fill="#3498DB" font-size="11" text-anchor="middle" font-family="Barlow" transform="rotate(38,120,68)">L = ?</text>
+      <text x="22" y="15" fill="#BEC5CE" font-size="11" font-family="Barlow">🏗️</text>
+      <text x="188" y="136" fill="#BEC5CE" font-size="11" font-family="Barlow">📦</text>
+    </svg>`,
+    schemaCaption: "Vue de profil — câble de grue (triangle rectangle)",
+    unite: "m",
+    reponse: 13.84,
+    tolerance: 0.05,
+    hint_incorrect: "Vous avez deux côtés d'un triangle rectangle (8,5 m et 11 m). Vous cherchez l'hypoténuse. Rappelez-vous le théorème de Pythagore : l'hypoténuse au carré est égale à la somme des carrés des deux autres côtés."
+  },
+  {
+    numero: "Mission 4",
+    titre: "Angle d'inclinaison du toit",
+    enonce: `Le charpentier vous soumet les plans du toit en pente. La toiture a une <strong>hauteur de 3,6 m</strong> pour une <strong>demi-largeur de 6 m</strong>.<br><br>
+    <strong>Calculez l'angle β de la pente du toit</strong> par rapport à l'horizontale. Vous devrez le communiquer à l'équipe de couverture.<br><br>
+    <em>Donnez votre réponse arrondie à 1 décimale.</em>`,
+    schema: `<svg width="260" height="120" viewBox="0 0 260 120">
+      <line x1="20" y1="100" x2="240" y2="100" stroke="#444" stroke-width="2"/>
+      <line x1="130" y1="100" x2="130" y2="20" stroke="#F4720B" stroke-width="2" stroke-dasharray="5,3"/>
+      <line x1="20" y1="100" x2="130" y2="20" stroke="#3498DB" stroke-width="2.5"/>
+      <line x1="130" y1="20" x2="240" y2="100" stroke="#3498DB" stroke-width="2.5"/>
+      <rect x="118" y="88" width="12" height="12" fill="none" stroke="#F9C623" stroke-width="1.5"/>
+      <text x="75" y="115" fill="#8A919E" font-size="11" text-anchor="middle" font-family="Barlow">6 m</text>
+      <text x="145" y="65" fill="#F4720B" font-size="11" font-family="Barlow">3,6 m</text>
+      <path d="M 42,100 Q 47,90 52,94" fill="none" stroke="#F9C623" stroke-width="1.5"/>
+      <text x="26" y="94" fill="#F9C623" font-size="13" font-family="Barlow Condensed">β</text>
+    </svg>`,
+    schemaCaption: "Coupe transversale du toit — triangle de pente",
+    unite: "°",
+    reponse: 31.0,
+    tolerance: 0.3,
+    hint_incorrect: "Regardez le triangle de droite formé par la demi-largeur (côté adjacent = 6 m) et la hauteur (côté opposé = 3,6 m). Quelle fonction trigonométrique relie l'angle et ces deux côtés ? Utilisez la fonction inverse pour trouver β."
+  },
+  {
+    numero: "Mission 5",
+    titre: "Distance à l'obstacle",
+    enonce: `Vous devez implanter un poteau de clôture. En vous plaçant en un point A, vous mesurez un angle de <strong>42°</strong> vers le sommet d'un obstacle (un mur). La hauteur de l'obstacle est de <strong>4,8 m</strong>.<br><br>
+    <strong>Calculez la distance horizontale D</strong> entre votre position et la base de l'obstacle.<br><br>
+    <em>Donnez votre réponse arrondie à 2 décimales.</em>`,
+    schema: `<svg width="260" height="120" viewBox="0 0 260 120">
+      <line x1="20" y1="100" x2="220" y2="100" stroke="#444" stroke-width="2"/>
+      <line x1="220" y1="100" x2="220" y2="30" stroke="#F4720B" stroke-width="3"/>
+      <line x1="20" y1="100" x2="220" y2="30" stroke="#3498DB" stroke-width="2" stroke-dasharray="5,4"/>
+      <rect x="208" y="88" width="12" height="12" fill="none" stroke="#F9C623" stroke-width="1.5"/>
+      <text x="120" y="115" fill="#8A919E" font-size="11" text-anchor="middle" font-family="Barlow">D = ?</text>
+      <text x="232" y="68" fill="#F4720B" font-size="11" font-family="Barlow">4,8 m</text>
+      <path d="M 44,100 Q 49,90 54,94" fill="none" stroke="#F9C623" stroke-width="1.5"/>
+      <text x="24" y="94" fill="#F9C623" font-size="12" font-family="Barlow Condensed">42°</text>
+      <text x="14" y="112" fill="#BEC5CE" font-size="10" font-family="Barlow">A 👷</text>
+      <text x="205" y="24" fill="#BEC5CE" font-size="10" font-family="Barlow">Mur</text>
+    </svg>`,
+    schemaCaption: "Vue de profil — implantation clôture",
+    unite: "m",
+    reponse: 5.33,
+    tolerance: 0.05,
+    hint_incorrect: "L'angle est de 42°, le côté opposé est 4,8 m (hauteur du mur) et vous cherchez D (côté adjacent). Posez l'équation avec la bonne relation trigonométrique, puis isolez D."
+  },
+  {
+    numero: "Mission 6",
+    titre: "Projection d'un balcon en saillie",
+    enonce: `Un balcon s'avance horizontalement. Il forme un angle de <strong>90°</strong> avec la façade verticale. La dalle du balcon mesure <strong>1,8 m</strong> de long et son extrémité est à <strong>1,8 m</strong> sous le niveau du plancher supérieur.<br><br>
+    Un étai doit soutenir l'extrémité du balcon depuis le sol, en formant un angle de <strong>55°</strong> avec le plancher du balcon.<br><br>
+    <strong>Calculez la longueur L de l'étai</strong> depuis le point d'ancrage jusqu'à l'extrémité du balcon.<br><br>
+    <em>Donnez votre réponse arrondie à 2 décimales.</em>`,
+    schema: `<svg width="260" height="140" viewBox="0 0 260 140">
+      <line x1="20" y1="60" x2="200" y2="60" stroke="#F4720B" stroke-width="2.5"/>
+      <line x1="20" y1="60" x2="20" y2="130" stroke="#888" stroke-width="2" stroke-dasharray="4,3"/>
+      <line x1="20" y1="130" x2="200" y2="130" stroke="#444" stroke-width="2"/>
+      <line x1="200" y1="130" x2="200" y2="60" stroke="#888" stroke-width="2" stroke-dasharray="4,3"/>
+      <line x1="20" y1="130" x2="200" y2="60" stroke="#3498DB" stroke-width="2.5"/>
+      <rect x="20" y="60" width="12" height="12" fill="none" stroke="#F9C623" stroke-width="1.5"/>
+      <text x="110" y="50" fill="#F4720B" font-size="11" text-anchor="middle" font-family="Barlow">Balcon 1,8 m</text>
+      <text x="215" y="100" fill="#888" font-size="11" font-family="Barlow">1,8 m</text>
+      <text x="100" y="108" fill="#3498DB" font-size="11" text-anchor="middle" font-family="Barlow" transform="rotate(-38,100,100)">L = ?</text>
+      <path d="M 42,130 Q 48,118 54,122" fill="none" stroke="#F9C623" stroke-width="1.5"/>
+      <text x="22" y="122" fill="#F9C623" font-size="12" font-family="Barlow Condensed">55°</text>
+    </svg>`,
+    schemaCaption: "Vue de profil — étai sous le balcon",
+    unite: "m",
+    reponse: 2.20,
+    tolerance: 0.05,
+    hint_incorrect: "Le côté opposé à l'angle de 55° est la hauteur verticale (1,8 m). L est l'hypoténuse de ce triangle rectangle. Choisissez la bonne relation trigonométrique et isolez L."
+  },
+  {
+    numero: "Mission 7",
+    titre: "Angle de la pente d'évacuation des eaux",
+    enonce: `Pour l'évacuation des eaux pluviales, une gouttière doit être posée avec la bonne inclinaison. La gouttière mesure <strong>9 m</strong> de long et doit descendre de <strong>15 cm</strong> (soit 0,15 m) sur toute sa longueur.<br><br>
+    <strong>Calculez l'angle γ</strong> que fait la gouttière avec l'horizontale pour valider la conformité de pose avec l'équipe couverture.<br><br>
+    <em>Donnez votre réponse arrondie à 2 décimales. (Attention : angle très petit !)</em>`,
+    schema: `<svg width="260" height="100" viewBox="0 0 260 100">
+      <line x1="20" y1="40" x2="220" y2="40" stroke="#444" stroke-width="1.5" stroke-dasharray="4,3"/>
+      <line x1="20" y1="40" x2="220" y2="56" stroke="#3498DB" stroke-width="3"/>
+      <line x1="220" y1="40" x2="220" y2="56" stroke="#F4720B" stroke-width="2"/>
+      <rect x="208" y="40" width="12" height="12" fill="none" stroke="#F9C623" stroke-width="1.5"/>
+      <text x="120" y="34" fill="#8A919E" font-size="11" text-anchor="middle" font-family="Barlow">9 m</text>
+      <text x="232" y="51" fill="#F4720B" font-size="10" font-family="Barlow">0,15 m</text>
+      <path d="M 40,40 Q 44,44 42,47" fill="none" stroke="#F9C623" stroke-width="1.5"/>
+      <text x="22" y="38" fill="#F9C623" font-size="13" font-family="Barlow Condensed">γ</text>
+      <text x="8" y="44" fill="#3498DB" font-size="20" font-family="Barlow">〜</text>
+    </svg>`,
+    schemaCaption: "Vue de profil — pente de la gouttière (angle exagéré)",
+    unite: "°",
+    reponse: 0.95,
+    tolerance: 0.05,
+    hint_incorrect: "La gouttière est l'hypoténuse (9 m). La descente est le côté opposé (0,15 m). Quelle relation trigonométrique convient ? Calculez le rapport, puis utilisez la fonction inverse. Attention à l'arrondi : l'angle est très petit !"
+  }
+];
+
+// ═══════════════════════════════════════════════════════
+//  ÉTAT
+// ═══════════════════════════════════════════════════════
+let indexQuestion = 0;
+let tentatives = 0;
+let totalTentatives = 0;
+
+function updateProgress() {
+  const pct = (indexQuestion / questions.length) * 100;
+  document.getElementById('progressFill').style.width = pct + '%';
+  document.getElementById('progressCount').textContent = indexQuestion + ' / ' + questions.length;
+}
+
+function afficherQuestion(idx) {
+  tentatives = 0;
+  const q = questions[idx];
+  updateProgress();
+
+  const card = document.getElementById('questionCard');
+  card.innerHTML = `
+    <div class="q-numero">${q.numero} — ${q.titre}</div>
+    <div class="q-enonce">${q.enonce}</div>
+    ${q.schema ? `<div class="q-schema">${q.schema}<div class="schema-caption">${q.schemaCaption}</div></div>` : ''}
+    <div class="brouillon-hint">
+      <span class="icon">📝</span>
+      <span>Prenez votre <strong>feuille de brouillon</strong> et votre calculatrice pour effectuer les calculs avant de saisir votre réponse.</span>
+    </div>
+    <div class="reponse-zone">
+      <div class="input-wrapper">
+        <input type="number" step="0.01" id="inputReponse" placeholder="Votre réponse…" autocomplete="off" onkeydown="if(event.key==='Enter') valider()"/>
+        <span class="unite">${q.unite}</span>
+      </div>
+      <button class="btn-valider" onclick="valider()">Valider</button>
+    </div>
+    <div class="feedback" id="feedback"></div>
+    <div class="tentatives" id="tentativesLabel"></div>
+    <button class="btn-suivant" id="btnSuivant" onclick="suivant()">Question suivante</button>
+  `;
+
+  // Re-animation
+  card.style.animation = 'none';
+  requestAnimationFrame(() => { card.style.animation = ''; });
+
+  document.getElementById('inputReponse').focus();
+}
+
+function valider() {
+  const q = questions[indexQuestion];
+  const input = document.getElementById('inputReponse');
+  const feedback = document.getElementById('feedback');
+  const btnSuivant = document.getElementById('btnSuivant');
+  const tentativesLabel = document.getElementById('tentativesLabel');
+
+  const valeur = parseFloat(input.value.replace(',', '.'));
+  if (isNaN(valeur)) {
+    feedback.className = 'feedback incorrect';
+    feedback.innerHTML = '<strong>⚠️ Saisie invalide.</strong> Entrez un nombre (ex : 13.5).';
+    return;
+  }
+
+  tentatives++;
+  totalTentatives++;
+
+  const diff = Math.abs(valeur - q.reponse);
+  if (diff <= q.tolerance) {
+    // BONNE RÉPONSE
+    feedback.className = 'feedback correct';
+    feedback.innerHTML = `<strong>✅ Correct !</strong> Votre résultat est validé. La valeur attendue est <strong>${q.reponse} ${q.unite}</strong>.<br>Bien joué, conducteur·rice ! La mission est accomplie.`;
+    input.disabled = true;
+    document.querySelector('.btn-valider').disabled = true;
+    if (indexQuestion < questions.length - 1) {
+      btnSuivant.style.display = 'inline-block';
+    } else {
+      btnSuivant.textContent = 'Voir le bilan';
+      btnSuivant.style.display = 'inline-block';
+    }
+    tentativesLabel.innerHTML = tentatives > 1
+      ? `Réussi en <span>${tentatives} tentatives</span>.`
+      : `Réussi <span>du premier coup</span> !`;
+  } else {
+    // MAUVAISE RÉPONSE
+    feedback.className = 'feedback incorrect';
+    feedback.innerHTML = `<strong>❌ Pas encore.</strong> Votre réponse (<strong>${valeur} ${q.unite}</strong>) ne correspond pas.<br><br>${q.hint_incorrect}`;
+    input.value = '';
+    input.focus();
+    tentativesLabel.innerHTML = `Tentative <span>${tentatives}</span> — continuez, vous pouvez le faire !`;
+  }
+}
+
+function suivant() {
+  indexQuestion++;
+  if (indexQuestion >= questions.length) {
+    afficherFinal();
+  } else {
+    afficherQuestion(indexQuestion);
+  }
+}
+
+function afficherFinal() {
+  document.getElementById('zoneQuestion').style.display = 'none';
+  document.getElementById('progressFill').style.width = '100%';
+  document.getElementById('progressCount').textContent = questions.length + ' / ' + questions.length;
+  const ecran = document.getElementById('ecranFinal');
+  ecran.style.display = 'block';
+  document.getElementById('finalScore').textContent =
+    `${questions.length} missions réussies — ${totalTentatives} tentatives au total`;
+}
+
+function recommencer() {
+  indexQuestion = 0;
+  tentatives = 0;
+  totalTentatives = 0;
+  document.getElementById('ecranFinal').style.display = 'none';
+  document.getElementById('zoneQuestion').style.display = 'block';
+  afficherQuestion(0);
+}
+
+// Init
+afficherQuestion(0);
+</script>
+
+</body>
+</html>
